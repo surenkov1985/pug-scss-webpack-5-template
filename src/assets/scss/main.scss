@@ -1,0 +1,21 @@
+@import "vars";
+@import "fonts";
+
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+
+	&__title {
+
+		color: $titleColor;
+		//font-family: monsterrat;
+	}
+	&__prop {
+		width: 1000px;
+		color: $propColor;
+		font-family: monsterrat;
+		background: url("../img/1s.jpg");
+	}
+}
