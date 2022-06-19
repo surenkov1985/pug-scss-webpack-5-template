@@ -1,5 +1,5 @@
 const path = require("path");
-const fs = require('fs')
+const fs = require('fs');
 const PAGES_DIR = path.join(__dirname, 'src/pug/pages/') ;
 const PAGES = fs.readdirSync(PAGES_DIR).filter(fileName => fileName.endsWith('.pug'));
 
@@ -7,7 +7,13 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 
-const plugins = [
+const mode = process.env.NODE_ENV;
+
+const build = {
+	context: path.resolve(__dirname, "./src"),
+	mode: mode,
+
+	plugins: [
 		new MiniCssExtractPlugin({
 			filename: "assets/styles/[name].[contenthash].css"
 		}),
@@ -19,16 +25,8 @@ const plugins = [
 			patterns: [
 				{from: "static", to: ""},
 
-		]}),
-	];
-
-let mode = process.env.NODE_ENV === "production" ? "production" : "development";
-
-const build = {
-	context: path.resolve(__dirname, "./src"),
-	mode: mode,
-
-	plugins: plugins,
+			]}),
+	],
 	entry: ["@babel/polyfill", "./index.js"],
 	resolve: {
 		alias: {
@@ -43,7 +41,6 @@ const build = {
 	output: {
 		path: path.resolve(__dirname, "dist"),
 		filename: "assets/js/[name].[contenthash].js",
-		// assetModuleFilename: "assets/[hash][ext][query]",
 		clean: true
 	},
 	module: {
@@ -97,10 +94,9 @@ const build = {
 			}
 		]
 	}
-}
+};
 
 const dev = {
-	mode: mode,
 	devtool: "source-map",
 	devServer: {
 		historyApiFallback: true,
@@ -122,11 +118,6 @@ const dev = {
 	},
 }
 
-if (mode === "production") {
+module.exports = Object.assign(mode === "development" ? dev : {}, build)
 
-	module.exports = Object.assign({}, build)
-} else {
-
-	module.exports = Object.assign(build, dev)
-}
 
