@@ -22,53 +22,30 @@ const plugins = [
 		]}),
 	];
 
-let mode = "development";
+let mode = process.env.NODE_ENV === "production" ? "production" : "development";
 
-
-if (process.env.NODE_ENV === "production") {
-	mode = "production"
-}
-
-module.exports = {
+const build = {
+	mode: mode,
 	context: path.resolve(__dirname, "./src"),
 	mode: mode,
+
 	plugins: plugins,
 	entry: ["@babel/polyfill", "./index.js"],
-	devtool: "source-map",
 	resolve: {
 		alias: {
 			"": path.resolve(__dirname, "src/")
 		}
-	},
-	output: {
-		path: path.resolve(__dirname, "dist"),
-		filename: "assets/js/[name].[contenthash].js",
-		// assetModuleFilename: "assets/[hash][ext][query]",
-		clean: true
 	},
 	optimization: {
 		splitChunks: {
 			chunks: "all",
 		},
 	},
-	devServer: {
-		historyApiFallback: true,
-		static: {
-			directory: path.join(__dirname, "src"),
-		},
-		open: true,
-		port: 8080,
-		host: "local-ip",
-		compress: true,
-		hot: true,
-		open: true,
-		liveReload: true,
-		client: {
-			overlay: {
-				warnings: true,
-				errors: true
-			}
-		}
+	output: {
+		path: path.resolve(__dirname, "dist"),
+		filename: "assets/js/[name].[contenthash].js",
+		// assetModuleFilename: "assets/[hash][ext][query]",
+		clean: true
 	},
 	module: {
 		rules: [
@@ -118,10 +95,39 @@ module.exports = {
 					}
 
 				},
-				// generator: {
-				// 	filename: "assets/js/[hash][ext]"
-				// }
 			}
 		]
 	}
 }
+
+const dev = {
+	mode: mode,
+	devtool: "source-map",
+	devServer: {
+		historyApiFallback: true,
+		static: {
+			directory: path.join(__dirname, "src"),
+		},
+		open: true,
+		port: 8080,
+		host: "local-ip",
+		compress: true,
+		hot: true,
+		liveReload: true,
+		client: {
+			overlay: {
+				warnings: true,
+				errors: true
+			}
+		}
+	},
+}
+
+if (mode === "production") {
+
+	module.exports = Object.assign({}, build)
+} else {
+
+	module.exports = Object.assign(build, dev)
+}
+
