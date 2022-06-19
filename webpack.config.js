@@ -6,6 +6,8 @@ const PAGES = fs.readdirSync(PAGES_DIR).filter(fileName => fileName.endsWith('.p
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
+const OptimizeCssPlugin = require("optimize-css-assets-webpack-plugin");
+const TerserWebpackPlugin = require("terser-webpack-plugin");
 
 const mode = process.env.NODE_ENV;
 
@@ -37,6 +39,13 @@ const build = {
 		splitChunks: {
 			chunks: "all",
 		},
+		minimize: true,
+		minimizer: [
+			new OptimizeCssPlugin(),
+			new TerserWebpackPlugin({
+				extractComments: false,
+			})
+		]
 	},
 	output: {
 		path: path.resolve(__dirname, "dist"),

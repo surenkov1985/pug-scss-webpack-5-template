@@ -1,1 +1,1 @@
-# pug-scss-webpack-5-template
+Сборка webpack
