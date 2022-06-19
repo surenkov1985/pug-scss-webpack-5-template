@@ -6,4 +6,4 @@ function sum(a, b) {
 
 console.log(sum(9, 11));
 
-$(".block").html("jQuery Block");
+$(".block").html("jQuery Block Watch");

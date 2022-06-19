@@ -10,12 +10,12 @@
 	&__title {
 
 		color: $titleColor;
-		//font-family: monsterrat;
+		font-family: monsterrat;
 	}
 	&__prop {
-		width: 1000px;
+		width: 500px;
 		color: $propColor;
 		font-family: monsterrat;
-		background: url("../img/1s.jpg");
+		background: url("/assets/img/1s.jpg");
 	}
 }

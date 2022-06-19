@@ -1,42 +1,50 @@
 const path = require("path");
+const fs = require('fs')
+const PAGES_DIR = path.join(__dirname, 'src/pug/pages/') ;
+const PAGES = fs.readdirSync(PAGES_DIR).filter(fileName => fileName.endsWith('.pug'));
 
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 const plugins = [
 		new MiniCssExtractPlugin({
-			filename: "[name].[contenthash].css"
+			filename: "assets/styles/[name].[contenthash].css"
 		}),
-		new HtmlWebpackPlugin({
-			template: "./pug/pages/index.pug"
-		}),
+		...PAGES.map(page => new HtmlWebpackPlugin({
+			template: `${PAGES_DIR}/${page}`,
+			filename: `./${page.replace(/\.pug/, '.html')}`,
+		})),
+		new CopyPlugin({
+			patterns: [
+				{from: "static", to: ""},
+
+		]}),
 	];
 
 let mode = "development";
+
 
 if (process.env.NODE_ENV === "production") {
 	mode = "production"
 }
 
 module.exports = {
-	context: path.resolve(__dirname, "src"),
+	context: path.resolve(__dirname, "./src"),
 	mode: mode,
 	plugins: plugins,
-	entry: "./index.js",
+	entry: ["@babel/polyfill", "./index.js"],
 	devtool: "source-map",
 	resolve: {
 		alias: {
-			"": path.resolve(__dirname, "src/assets/")
+			"": path.resolve(__dirname, "src/")
 		}
 	},
 	output: {
 		path: path.resolve(__dirname, "dist"),
-		filename: "[name].[contenthash].js",
+		filename: "assets/js/[name].[contenthash].js",
 		// assetModuleFilename: "assets/[hash][ext][query]",
 		clean: true
-	},
-	devServer: {
-		hot: true,
 	},
 	optimization: {
 		splitChunks: {
@@ -44,7 +52,23 @@ module.exports = {
 		},
 	},
 	devServer: {
-		port: 8080
+		historyApiFallback: true,
+		static: {
+			directory: path.join(__dirname, "src"),
+		},
+		open: true,
+		port: 8080,
+		host: "local-ip",
+		compress: true,
+		hot: true,
+		open: true,
+		liveReload: true,
+		client: {
+			overlay: {
+				warnings: true,
+				errors: true
+			}
+		}
 	},
 	module: {
 		rules: [
@@ -92,6 +116,7 @@ module.exports = {
 					options: {
 						cacheDirectory: true,
 					}
+
 				},
 				// generator: {
 				// 	filename: "assets/js/[hash][ext]"
