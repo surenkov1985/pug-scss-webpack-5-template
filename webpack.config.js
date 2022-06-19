@@ -118,6 +118,6 @@ const dev = {
 	},
 }
 
-module.exports = Object.assign(mode === "development" ? dev : {}, build)
+module.exports = Object.assign(build, mode === "development" ? dev : {})
 
 
