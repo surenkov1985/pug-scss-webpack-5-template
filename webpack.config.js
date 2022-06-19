@@ -25,7 +25,6 @@ const plugins = [
 let mode = process.env.NODE_ENV === "production" ? "production" : "development";
 
 const build = {
-	mode: mode,
 	context: path.resolve(__dirname, "./src"),
 	mode: mode,
 
